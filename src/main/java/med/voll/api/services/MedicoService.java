@@ -4,15 +4,11 @@ import med.voll.api.dtos.medicos.DadosListagemMedico;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 
 import med.voll.api.dtos.medicos.DadosCadastroMedico;
 import med.voll.api.models.Medico;
 import med.voll.api.repository.MedicoRepository;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class MedicoService implements MedicoServiceInterface{
@@ -21,8 +17,10 @@ public class MedicoService implements MedicoServiceInterface{
     private MedicoRepository rp;
 
     @Override
-    public void cadastrarMedico(DadosCadastroMedico dados) {
-        this.rp.save(new Medico(dados));
+    public DadosListagemMedico cadastrarMedico(DadosCadastroMedico dados) {
+        Medico medico = new Medico(dados);
+        this.rp.save(medico);
+        return new DadosListagemMedico(medico);
     }
 
     @Override
@@ -40,5 +38,11 @@ public class MedicoService implements MedicoServiceInterface{
     public void excluirMedico(Long id) {
         Medico medico  = this.rp.getReferenceById(id);
         medico.setAtivo(false);
+    }
+
+    @Override
+    public DadosListagemMedico getMedico(Long id) {
+        Medico medico = this.rp.getReferenceById(id);
+        return new DadosListagemMedico(medico);
     }
 }
