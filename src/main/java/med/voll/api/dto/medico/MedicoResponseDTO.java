@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import med.voll.api.enumerator.Especialidade;
 
 @Getter
 @Setter
@@ -14,4 +15,6 @@ import lombok.Setter;
 public class MedicoResponseDTO {
     private Long id;
     private String nome;
+    private String email;
+    private Especialidade especialidade;
 }
