@@ -11,10 +11,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+import med.voll.api.dto.EnderecoDTO;
 import med.voll.api.dto.medico.MedicoCreateDTO;
 import med.voll.api.dto.medico.MedicoResponseDTO;
+import med.voll.api.dto.medico.MedicoUpdateDTO;
 import med.voll.api.dto.paciente.PacienteCreateDTO;
 import med.voll.api.dto.paciente.PacienteResponseDTO;
+import med.voll.api.dto.paciente.PacienteUpdateDTO;
+import med.voll.api.model.Endereco;
 import med.voll.api.model.Medico;
 import med.voll.api.model.Paciente;
 import med.voll.api.repository.PacienteRepository;
@@ -52,6 +58,52 @@ public class PacienteService {
         Page<Paciente> pacientes = pacienteRepository.findByAtivoTrue(pageable);
 
         return pacientes.map(paciente -> modelMapper.map(paciente, PacienteResponseDTO.class));
+    }
+
+    @Transactional
+    public PacienteResponseDTO atualizarPaciente(Long id, PacienteUpdateDTO pacienteUpdateDTO) {
+        Paciente paciente = pacienteRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Paciente não encontrado"));
+
+        if (pacienteUpdateDTO.getNome() != null) {
+            paciente.setNome(pacienteUpdateDTO.getNome());
+        }
+
+        if (pacienteUpdateDTO.getTelefone() != null) {
+            paciente.setTelefone(pacienteUpdateDTO.getTelefone());
+        }
+
+        if (pacienteUpdateDTO.getEndereco() != null) {
+            atualizarEndereco(paciente.getEndereco(), pacienteUpdateDTO.getEndereco());
+        }
+
+        pacienteRepository.save(paciente);
+
+        return modelMapper.map(paciente, PacienteResponseDTO.class);
+    }
+
+    private void atualizarEndereco(Endereco endereco, EnderecoDTO enderecoDTO) {
+        if (enderecoDTO.getLogradouro() != null) {
+            endereco.setLogradouro(enderecoDTO.getLogradouro());
+        }
+        if (enderecoDTO.getNumero() != null) {
+            endereco.setNumero(enderecoDTO.getNumero());
+        }
+        if (enderecoDTO.getComplemento() != null) {
+            endereco.setComplemento(enderecoDTO.getComplemento());
+        }
+        if (enderecoDTO.getBairro() != null) {
+            endereco.setBairro(enderecoDTO.getBairro());
+        }
+        if (enderecoDTO.getCidade() != null) {
+            endereco.setCidade(enderecoDTO.getCidade());
+        }
+        if (enderecoDTO.getUf() != null) {
+            endereco.setUf(enderecoDTO.getUf());
+        }
+        if (enderecoDTO.getCep() != null) {
+            endereco.setCep(enderecoDTO.getCep());
+        }
     }
 
 }
