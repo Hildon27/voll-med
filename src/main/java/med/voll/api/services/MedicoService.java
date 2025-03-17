@@ -52,11 +52,11 @@ public class MedicoService {
 
 
     public Page<MedicoResponseDTO> listarMedicos(int page) {
-    Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.ASC, "nome"));
-    
-    Page<Medico> medicos = medicoRepository.findAll(pageable);
-    
-    return medicos.map(medico -> modelMapper.map(medico, MedicoResponseDTO.class));
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.ASC, "nome"));
+        
+        Page<Medico> medicos = medicoRepository.findByAtivoTrue(pageable);
+        
+        return medicos.map(medico -> modelMapper.map(medico, MedicoResponseDTO.class));
     }
 
     @Transactional
@@ -64,7 +64,6 @@ public class MedicoService {
         Medico medico = medicoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Médico não encontrado"));
 
-        // Atualiza apenas os campos permitidos
         if (medicoUpdateDTO.getNome() != null) {
             medico.setNome(medicoUpdateDTO.getNome());
         }
@@ -104,6 +103,15 @@ public class MedicoService {
         if (enderecoDTO.getCep() != null) {
             endereco.setCep(enderecoDTO.getCep());
         }
+    }
+
+    @Transactional
+    public void excluirMedico(Long id) {
+        Medico medico = medicoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Médico não encontrado"));
+
+        medico.setAtivo(false);
+        medicoRepository.save(medico);
     }
 
 

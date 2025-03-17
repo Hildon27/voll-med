@@ -16,5 +16,6 @@ public class MedicoResponseDTO {
     private Long id;
     private String nome;
     private String email;
+    private boolean ativo;
     private Especialidade especialidade;
 }

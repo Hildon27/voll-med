@@ -17,6 +17,7 @@ import med.voll.api.dto.medico.MedicoResponseDTO;
 import med.voll.api.dto.medico.MedicoUpdateDTO;
 import med.voll.api.services.MedicoService;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,18 +51,25 @@ public class MedicoController {
     @GetMapping
     public ResponseEntity<Page<MedicoResponseDTO>> listarMedicos(
             @RequestParam(defaultValue = "0") int page) {
-
         Page<MedicoResponseDTO> medicos = medicoService.listarMedicos(page);
         return ResponseEntity.ok(medicos);
     }
 
     @PutMapping("/{id}")
+    @Transactional
     public ResponseEntity<MedicoResponseDTO> atualizarMedico(
             @PathVariable Long id,
             @Valid @RequestBody MedicoUpdateDTO medicoUpdateDTO) {
 
         MedicoResponseDTO medicoAtualizado = medicoService.atualizarMedico(id, medicoUpdateDTO);
         return ResponseEntity.ok(medicoAtualizado);
+    }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity<Void> excluirMedico(@PathVariable Long id) {
+        medicoService.excluirMedico(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
