@@ -10,13 +10,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import med.voll.api.dto.medico.MedicoCreateDTO;
 import med.voll.api.dto.medico.MedicoResponseDTO;
+import med.voll.api.dto.medico.MedicoUpdateDTO;
 import med.voll.api.services.MedicoService;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
@@ -27,12 +31,14 @@ public class MedicoController {
     private MedicoService medicoService;
 
     @PostMapping
+    @Transactional
     public ResponseEntity<MedicoResponseDTO> cadastrarMedico(@Valid @RequestBody MedicoCreateDTO medicoCreateDTO) {
         MedicoResponseDTO responseDTO = medicoService.cadastrarMedico(medicoCreateDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
 
     @PostMapping("/batch")
+    @Transactional
     public ResponseEntity<List<MedicoResponseDTO>> cadastrarMedicos(
             @Valid @RequestBody List<MedicoCreateDTO> medicosDTO) {
 
@@ -47,6 +53,15 @@ public class MedicoController {
 
         Page<MedicoResponseDTO> medicos = medicoService.listarMedicos(page);
         return ResponseEntity.ok(medicos);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<MedicoResponseDTO> atualizarMedico(
+            @PathVariable Long id,
+            @Valid @RequestBody MedicoUpdateDTO medicoUpdateDTO) {
+
+        MedicoResponseDTO medicoAtualizado = medicoService.atualizarMedico(id, medicoUpdateDTO);
+        return ResponseEntity.ok(medicoAtualizado);
     }
 
 }
