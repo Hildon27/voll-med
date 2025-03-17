@@ -106,4 +106,13 @@ public class PacienteService {
         }
     }
 
+    @Transactional
+    public void excluirPaciente(Long id) {
+        Paciente paciente = pacienteRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Paciente não encontrado"));
+
+        paciente.setAtivo(false);
+        pacienteRepository.save(paciente);
+    }
+
 }
