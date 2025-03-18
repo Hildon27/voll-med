@@ -56,6 +56,14 @@ public class MedicoService {
         return medicos.map(medico -> modelMapper.map(medico, MedicoResponseDTO.class));
     }
 
+    public MedicoCreateDTO listarMedico(Long id) {
+        Medico medico = medicoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Médico não encontrado"));
+
+        MedicoCreateDTO medicoCreateDTO = modelMapper.map(medico, MedicoCreateDTO.class);
+        return medicoCreateDTO;
+    }
+
     @Transactional
     public MedicoResponseDTO atualizarMedico(Long id, MedicoUpdateDTO medicoUpdateDTO) {
         Medico medico = medicoRepository.findById(id)

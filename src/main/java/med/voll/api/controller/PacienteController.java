@@ -57,6 +57,13 @@ public class PacienteController {
         return ResponseEntity.ok(pacientes);
     }
 
+    @GetMapping("/{id}")
+    @Transactional
+    public ResponseEntity<PacienteCreateDTO> listarPaciente(@PathVariable Long id) {
+        PacienteCreateDTO paciente = pacienteService.listarPaciente(id);
+        return ResponseEntity.ok(paciente);
+    }
+
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<PacienteResponseDTO> atualizarPaciente(

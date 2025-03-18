@@ -60,6 +60,14 @@ public class PacienteService {
         return pacientes.map(paciente -> modelMapper.map(paciente, PacienteResponseDTO.class));
     }
 
+    public PacienteCreateDTO listarPaciente(Long id) {
+        Paciente paciente = pacienteRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Paciente não encontrado"));
+
+        PacienteCreateDTO pacienteCreateDTO = modelMapper.map(paciente, PacienteCreateDTO.class);
+        return pacienteCreateDTO;
+    }
+
     @Transactional
     public PacienteResponseDTO atualizarPaciente(Long id, PacienteUpdateDTO pacienteUpdateDTO) {
         Paciente paciente = pacienteRepository.findById(id)
